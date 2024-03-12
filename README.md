@@ -32,6 +32,7 @@ https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/e3c31da9-53
 
 ### Make a new profile, or retrieve an existing one!
 
+https://github.com/olivervejen/obsidian-coop-comments-plugin/assets/9892968/f1b0ea46-ce55-4b58-913e-eeb0b2b3b45f
 
 
 ### The settings panel will also allow you to change and edit profile details, as well as some client-side rendering options. More to come!
