@@ -6,7 +6,7 @@ Another reference has been [obsidian-comments-plugin], thanks!
 
 > [!NOTE]
 > This is just the first prototype of the plugin. As it is my first ever Obsidian plugin I have so many ideas for improvement. And I think the first step is a complete architectural rework.
-> I also want to work on options for being able to choose where things are saved. Right now it is a hybrid between saving a lot of info in a single file and marking the text files seperately. I want to implement options for saving purely in a seperate file, but also an option for saving purely in the text files to preserve the spirit of pure-text note taking.
+> - I also want to work on options for being able to choose where things are saved. Right now it is a hybrid between saving a lot of info in a single file and marking the text files seperately. I want to implement options for saving purely in a seperate file, but also an option for saving purely in the text files to preserve the spirit of pure-text note taking.
 
 ## Features:
 - Commenting
