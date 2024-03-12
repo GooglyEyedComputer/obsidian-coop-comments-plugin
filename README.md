@@ -8,6 +8,7 @@ A plugin for Obsidian that adds comments. Inspired by the comment systems in goo
 - Commenting
   - Right click to insert comment on selection.
   - Comments are highlighted with profile colors.
+  - Comments saved in a json file in the root of the vault. (for now)
   - CTRL+Click to center the commented text.
 - Comment view
   - List of all comments on in the current file.
