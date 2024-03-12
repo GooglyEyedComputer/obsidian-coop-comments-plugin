@@ -160,6 +160,19 @@ If your plugin does not need CSS, delete this file.
 .comment-element:has(.reply-indicator-icon){
     padding-bottom:0px;
 }
+.comment-element.comment-element-focused{
+    background-color: color-mix(in srgb, var(--nav-item-background-active),rgba(0, 0, 0, 0.075));
+    transition: all 0.15s;
+}
+.comment-element.comment-element-focused .reply-indicator-icon{
+    opacity:0;
+    padding:0;
+    transition: all 0.15s;
+}
+.comment-element.comment-element-focused > .comment-element-content > p{
+    -webkit-line-clamp: 99;
+    transition: all 0.15s;
+}
 /* Comment Editor */
 .comment-highlight{
     border-radius: 3px;
@@ -167,27 +180,6 @@ If your plugin does not need CSS, delete this file.
     -o-box-decoration-break: clone;
     box-decoration-break: clone;
 }
-/* .comment-marking:not(.marking-hidden) + .comment-highlight::before{
-    content: "";
-    box-sizing: border-box;
-    position: absolute;
-    width: 12px;
-    height: 1.45em;
-    z-index: 0;
-    border-radius: 25px;
-    background-color: var(--background-primary);
-}
-.comment-marking:not(.marking-hidden) + .comment-highlight::after {
-    content: "";
-    box-sizing: border-box;
-    position: absolute;
-    width: 12px;
-    height: 1.45em;
-    z-index: 0;
-    border-radius: 25px;
-    background-color: var(--background-primary);
-    transform: translateX(-12px);
-} */
 .marking-hidden{
     display: inline-block;
     width:0px;
@@ -202,24 +194,12 @@ If your plugin does not need CSS, delete this file.
     font-size: small;
     padding: 0 1px;
 }
+/* util */
 .strike-through{
     background-image: linear-gradient(red, red);
     background-size: 100% 2px;
     background-repeat: no-repeat;
     background-position: center center;
-}
-.comment-element.comment-element-focused{
-    background-color: color-mix(in srgb, var(--nav-item-background-active),rgba(0, 0, 0, 0.075));
-    transition: all 0.15s;
-}
-.comment-element.comment-element-focused .reply-indicator-icon{
-    opacity:0;
-    padding:0;
-    transition: all 0.15s;
-}
-.comment-element.comment-element-focused > .comment-element-content > p{
-    -webkit-line-clamp: 99;
-    transition: all 0.15s;
 }
 .percentage-input > span {
     display: inline-block;

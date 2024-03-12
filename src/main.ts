@@ -32,19 +32,17 @@ export default class CommentPlugin extends Plugin {
 		name: "Comment Selected",
 		icon: "message-square",
 		editorCallback: (editor: Editor, view: MarkdownView) => {
-			if (!view.file)
-				return undefined;
-			let filePath = view.file.path;
+			if (!view.file) return undefined;
+
 			let shouldComment = true;
-			this.viewPlugin.decorations.between(editor.posToOffset(editor.getCursor("from")), editor.posToOffset(editor.getCursor("to")), (a, b, c): false | void => {
-				shouldComment = false;
-				return false
-			})
+			this.viewPlugin.decorations.between(editor.posToOffset(editor.getCursor("from")), editor.posToOffset(editor.getCursor("to")), (a, b, c): false | void => shouldComment = false);
+			
+			//Is comment selection valid?
 			if (shouldComment && editor.getSelection() != "") {
+				let filePath = view.file.path;
 				new CommentModal(this.app, (commentText) => {
-					this.commentsHandler.addComment(filePath, editor.getSelection(), commentText, (comment) => editor.replaceSelection("|" + (comment.id) + "|" + editor.getSelection() + "||"))
-					// this.commentsView.updateView(filePath, this.viewPlugin, editor);
-					this.updateViews(true)
+					this.commentsHandler.addComment(filePath, editor.getSelection(), commentText, (comment) => editor.replaceSelection("|" + (comment.id) + "|" + editor.getSelection() + "||"));
+					this.updateViews(true);
 				}).open();
 			} else {
 				if (!shouldComment) new Notice("You cant overlap comments!")
@@ -64,57 +62,53 @@ export default class CommentPlugin extends Plugin {
 		this.addSettingTab(new CommentsSettingTab(this.app, this));
 
 		this.registerEditorExtension([Prec.lowest(commentViewPlugin)]);
-		this.app.workspace.updateOptions()
+		
 		let profileId = this.app.loadLocalStorage("CommentPlugin:comment-profile-name");
 		if (!profileId || !this.commentsHandler.getCommenterProfile(profileId)) {
+			//Intro popup if user is new.
 			new IntroModal(this.app, (val) => {
-				this.app.saveLocalStorage("CommentPlugin:comment-profile-name", val.id)
+				this.app.saveLocalStorage("CommentPlugin:comment-profile-name", val.id);
 				this.settings.commenter = val;
 				this.commentsHandler.addCommenterProfile(val);
-				this.saveSettings()
-				let ed = this.app.workspace.activeEditor?.editor;
-				if (!ed) return;
-				// this.commentsView.updateView(this.commentsHandler.commentsPath, this.viewPlugin, ed)
+				this.saveSettings();
 				this.updateViews(true, true);
 			}).open(this.commentsHandler);
 		}
-		//Register right click event for comment.
+
+		//Register right click event for commenting.
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu) => {
 				menu.addItem((item) => {
 					item.setTitle(this.commentCommand.name.split(": ")[1])
 						.setIcon(this.commentCommand.icon ? this.commentCommand.icon : null)
 						.onClick(() => {
-
 							//@ts-ignore
 							this.app.commands.executeCommandById(this.commentCommand.id);
 						});
 				});
 			})
 		);
-		// this.registerInterval(window.setInterval(()=>this.updateViews(), 100))
+
 		//Register view for comments.
 		this.registerView(COMMENTS_VIEW_TYPE, (leaf) => (this.commentsView = new CommentsView(leaf, this)));
+		
 		//Register ribbon button to activate view.
 		this.addRibbonIcon("message-square", "Activate view", () => {
 			this.activateView();
 		});
 
+		//Update comment view and comment plugin view on "resize" (apparently the most reliable event to do this rn).
 		this.registerEvent(this.app.workspace.on("resize", () => {
-			this.updateViews(true)
+			this.updateViews(true);
 		})) 
-		// this.registerEvent(this.app.workspace.on("file-open", (a) => {
-		// 	this.updateViews(true)
-		// }))
-		// this.registerEvent(this.app.workspace.on("active-leaf-change", (leaf) => {
-		// 	if (!(leaf?.view instanceof FileView) || !leaf.view.file)
-		// 		return;
-
-		// 	this.updateViews(true)
-		// }))
-		this.updateViews(true)
+		this.updateViews(true);
 	}
-
+	
+	/**
+	 * Updates both the comments view AND the cm extension view (commentPluginView)
+	 * @param reFocus If focus should be triggered on .cm-content before updating. (to make sure that the right editor is in workspace.currentEditor)
+	 * @param force If the cm extension should dump current decorations and rebuild from scratch
+	 */
 	updateViews(reFocus: boolean = true, force?: true) {
 		if(reFocus) $(".cm-content").trigger("focus")
 		let path = this.app.workspace.getActiveFile()?.path;
@@ -140,27 +134,19 @@ export default class CommentPlugin extends Plugin {
 		}
 	}
 
-	onunload() {
-
-	}
-
-	addComment(editor: Editor, view: MarkdownView, commentText: string): any {
-
-	}
-
+	/**
+	 * Activates or detaches comments view
+	 */
 	async activateView() {
-		const { workspace } = this.app;
+		let { workspace } = this.app;
 
 		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(COMMENTS_VIEW_TYPE);
+		let leaves = workspace.getLeavesOfType(COMMENTS_VIEW_TYPE);
 
 		if (leaves.length > 0) {
-			// A leaf with our view already exists, use that
 			leaf = leaves[0];
 			leaf.detach();
 		} else {
-			// Our view could not be found in the workspace, create a new leaf
-			// in the right sidebar for it
 			leaf = workspace.getRightLeaf(false);
 			await leaf.setViewState({ type: COMMENTS_VIEW_TYPE, active: true });
 			workspace.revealLeaf(leaf);
@@ -174,6 +160,5 @@ export default class CommentPlugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-		// this.commentsView.updateView(this.commentsHandler.commentsPath, this.viewPlugin)
 	}
 }

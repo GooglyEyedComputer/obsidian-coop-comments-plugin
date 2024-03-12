@@ -3,6 +3,9 @@ import CommentsHandler from "src/commentsHandler";
 import { CommentsPluginSettings, DEFAULT_SETTINGS } from "src/main";
 import { CommentProfile } from "src/types";
 
+/**
+ * A modal for setting the commenter profile, if the user is new.
+ */
 export class IntroModal extends Modal {
   id: string;
   name: string;
@@ -13,11 +16,13 @@ export class IntroModal extends Modal {
   nameInput: TextComponent;
   colorElement: Setting;
   colorInput: ColorComponent;
+
   onSubmit: (result: CommentProfile) => void;
   constructor(app: App, onSubmit: (result: CommentProfile) => void) {
     super(app);
     this.onSubmit = onSubmit;
   }
+
   open(commentHandler?: CommentsHandler): void {
     super.open();
     let { contentEl } = this;
@@ -28,25 +33,25 @@ export class IntroModal extends Modal {
       .setName("Profile Identifier")
       .setDesc("The unique name that identifies your specific profile. (Save it if you want to use the same profile from another pc.)")
       .addText((text) => {
-        let ids = commentHandler?.getCommenterProfiles().map((val) => val.id)
+        let ids = commentHandler?.getCommenterProfiles().map((val) => val.id);
         this.idInput = text
           .setPlaceholder("Stacy Memorablename")
           .onChange(async (value) => {
             this.id = value;
             let matching = ids?.includes(text.getValue());
-            if(!matching) {
+            if (!matching) {
               this.colorInput.setValue("#000000");
               this.nameInput.setValue("");
               return;
             };
             let commenter = commentHandler?.getCommenterProfile(value);
-            if(!commenter) return;
+            if (!commenter) return;
             this.colorInput.setValue(commenter?.color);
             this.nameInput.setValue(commenter?.name);
             this.nameInput.onChanged();
-          })
-      }
-      );
+          });
+      });
+
     this.nameElement = new Setting(contentEl)
       .setName("Commenter Name")
       .setDesc("The name that is shown on your comments")
@@ -55,9 +60,9 @@ export class IntroModal extends Modal {
           .setPlaceholder("Stacy Fakename")
           .onChange(async (value) => {
             this.name = value;
-          })
-      }
-      );
+          });
+      });
+
     this.colorElement = new Setting(contentEl)
       .setName("Commenter Color")
       .setDesc("Color that is shown on your comments")
@@ -73,14 +78,11 @@ export class IntroModal extends Modal {
       this.close();
       this.onSubmit({ id: this.id, name: this.name, color: this.color });
     });
-    contentEl.append(submitButtonElement.buttonEl);
-  }
-  onOpen(currentText?: string) {
 
+    contentEl.append(submitButtonElement.buttonEl);
   }
   close() {
     super.close()
-    
   }
   onClose() {
     let { contentEl } = this;
