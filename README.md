@@ -6,11 +6,12 @@ Another reference has been [obsidian-comments-plugin], thanks!
 
 > [!NOTE]
 > This is just the first prototype of the plugin. As it is my first ever Obsidian plugin I have so many ideas for improvement. And I think the first step is a complete architectural rework.
+> - I also want to work on options for being able to choose where things are saved. Right now it is a hybrid between saving a lot of info in a single file and marking the text files seperately. I want to implement options for saving purely in a seperate file, but also an option for saving purely in the text files to preserve the spirit of pure-text note taking.
 
 ## Features:
 - Commenting
   - Right click to insert comment on selection.
-  - Comments are highlighted with profile colors.
+  - Comments are highlighted with profile colors. They are marked by |id|...|| in the text file. (for now
   - Comments saved in a json file in the root of the vault. (for now)
   - CTRL+Click to center the commented text.
 - Comment view
@@ -31,7 +32,7 @@ https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/e3c31da9-53
 
 ### Make a new profile, or retrieve an existing one!
 
-https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/090cc5bc-e57e-4ecc-b121-3fd8b172a573
+https://github.com/olivervejen/obsidian-coop-comments-plugin/assets/9892968/f1b0ea46-ce55-4b58-913e-eeb0b2b3b45f
 
 
 ### The settings panel will also allow you to change and edit profile details, as well as some client-side rendering options. More to come!
