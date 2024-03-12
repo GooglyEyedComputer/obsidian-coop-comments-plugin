@@ -21,9 +21,11 @@ A plugin for Obsidian that adds comments. Inspired by the comment systems in goo
 ## Videos:
 
 Here are the comments in action!
+
 https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/e3c31da9-5361-4101-a33a-11fa138a752b
 
 Make a new profile, or retrieve an existing one!
+
 https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/090cc5bc-e57e-4ecc-b121-3fd8b172a573
 
 The settings panel will also allow you to change and edit profile details, as well as some client-side rendering options. More to come!
