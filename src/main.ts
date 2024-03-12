@@ -75,7 +75,7 @@ export default class CommentPlugin extends Plugin {
 				let ed = this.app.workspace.activeEditor?.editor;
 				if (!ed) return;
 				// this.commentsView.updateView(this.commentsHandler.commentsPath, this.viewPlugin, ed)
-				this.updateViews(true);
+				this.updateViews(true, true);
 			}).open(this.commentsHandler);
 		}
 		//Register right click event for comment.
