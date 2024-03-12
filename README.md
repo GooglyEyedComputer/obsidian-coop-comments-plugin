@@ -1,6 +1,9 @@
 # ObsidianCommentsPlugin
 A plugin for Obsidian that adds comments. Inspired by the comment systems in google docs and word, this plugin is made to allow multiple people to work on and comment in the same vault with any kind of syncronization. The plugin offers persistant profiles that gets shown on the comments. The profile used to comment is identified through a simple "password". Using this password will allow you to comment from the same profile no matter what devicec you are on, given you know the password. [See it in action](README.md#videos)
 
+Thank you to [Fevol](https://github.com/Fevol) for being a big help and for his project [obsidian-criticmarkup](https://github.com/Fevol/obsidian-criticmarkup), which has been a great reference. 
+Another reference has been [obsidian-comments-plugin], thanks!
+
 > [!NOTE]
 > This is just the first prototype of the plugin. As it is my first ever Obsidian plugin I have so many ideas for improvement. And I think the first step is a complete architectural rework.
 
