@@ -17,7 +17,6 @@ A plugin for Obsidian that adds comments. Inspired by the comment systems in goo
 - Persistant profiles
   - Retrieve and use profile based on simple string identifier. Use the same comment profile across different devices!
   - Edit the name and color shown in the profiles comments.
-  - 
 
 ## Videos:
 
