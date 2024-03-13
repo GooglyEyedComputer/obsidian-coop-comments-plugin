@@ -1,4 +1,4 @@
-import { AbstractInputSuggest, App, ButtonComponent, ColorComponent, Modal, PopoverSuggest, Setting, TextAreaComponent, TextComponent } from "obsidian";
+import { AbstractInputSuggest, App, ButtonComponent, ColorComponent, Modal, Notice, PopoverSuggest, Setting, TextAreaComponent, TextComponent } from "obsidian";
 import CommentsHandler from "src/commentsHandler";
 import { CommentsPluginSettings, DEFAULT_SETTINGS } from "src/main";
 import { CommentProfile } from "src/types";
@@ -23,7 +23,7 @@ export class IntroModal extends Modal {
     this.onSubmit = onSubmit;
   }
 
-  open(commentHandler?: CommentsHandler): void {
+  open(commentHandler?: CommentsHandler, currentName?: string | undefined): void {
     super.open();
     let { contentEl } = this;
 
@@ -36,8 +36,8 @@ export class IntroModal extends Modal {
         let ids = commentHandler?.getCommenterProfiles().map((val) => val.id);
         this.idInput = text
           .setPlaceholder("Stacy Memorablename")
+          .setValue(currentName ? currentName : "")
           .onChange(async (value) => {
-            this.id = value;
             let matching = ids?.includes(text.getValue());
             if (!matching) {
               this.colorInput.setValue("#000000");
@@ -50,6 +50,7 @@ export class IntroModal extends Modal {
             this.nameInput.setValue(commenter?.name);
             this.nameInput.onChanged();
           });
+          this.idInput.onChanged()
       });
 
     this.nameElement = new Setting(contentEl)
@@ -75,6 +76,10 @@ export class IntroModal extends Modal {
 
 
     let submitButtonElement: ButtonComponent = new ButtonComponent(contentEl).setCta().setButtonText("Submit").onClick((val) => {
+      this.id = this.idInput.getValue();
+      if (this.id == "") return new Notice("You have to have a secret for comments to work!");
+      this.color = this.colorInput.getValue();
+      this.name = this.nameInput.getValue();
       this.close();
       this.onSubmit({ id: this.id, name: this.name, color: this.color });
     });

@@ -62,6 +62,9 @@ If your plugin does not need CSS, delete this file.
     overflow: hidden;
     font-weight: bold;
 }
+.comment-reply-text{
+    margin-top:5px;
+}
 .comment-element > .comment-element-content{
     padding-top:20px;
     margin-top:5px;
@@ -108,12 +111,19 @@ If your plugin does not need CSS, delete this file.
 .comment-reply-credentials > p:last-child, .comment-element-credentials > p:last-child {
     font-size: .7rem;
 }
-.comment-reply-credentials > p:last-child, .comment-element-credentials > div{
+.comment-reply-credentials > p:last-child, .comment-element-credentials > div, .comment-reply-credentials > div{
     justify-content: center;
     align-items: center;
     flex-direction: row-reverse;
 }
 .comment-credentials-color{
+    width:15px;
+    height:15px;
+    border-radius: 100%;
+    margin-right: 5px;
+    border: 1px darkgrey solid;
+}
+.reply-credentials-color{
     width:15px;
     height:15px;
     border-radius: 100%;

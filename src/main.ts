@@ -72,7 +72,7 @@ export default class CommentPlugin extends Plugin {
 				this.commentsHandler.addCommenterProfile(val);
 				this.saveSettings();
 				this.updateViews(true, true);
-			}).open(this.commentsHandler);
+			}).open(this.commentsHandler, profileId);
 		}
 
 		//Register right click event for commenting.

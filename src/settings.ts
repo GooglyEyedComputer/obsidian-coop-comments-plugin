@@ -1,5 +1,5 @@
 import CommentPlugin from "./main";
-import { App, ColorComponent, PluginSettingTab, Setting, SliderComponent, TextComponent } from "obsidian";
+import { App, ColorComponent, Notice, PluginSettingTab, Setting, SliderComponent, TextComponent } from "obsidian";
 import $ from "jquery";
 
 export class CommentsSettingTab extends PluginSettingTab {
@@ -17,21 +17,35 @@ export class CommentsSettingTab extends PluginSettingTab {
 
         let uniqueName = this.app.loadLocalStorage("CommentPlugin:comment-profile-name");
 
+        let secretText: TextComponent;
         new Setting(containerEl)
             .setName("Secret Name")
             .setDesc("The unique name that identifies your specific profile")
             .addText((text) =>
-                text
+                secretText = text
                     .setPlaceholder("Stacy Fakename")
-                    .setValue(uniqueName)
-                    .onChange(async (value) => {
-                        this.app.saveLocalStorage("CommentPlugin:comment-profile-name", value);
-                        this.plugin.commentsHandler.editCommenterProfile(this.plugin.settings.commenter.id, value);
-                        this.plugin.settings.commenter.id = value;
+                    .setValue(uniqueName))
+            .addButton((button) =>
+                button.setButtonText("Overwrite")
+                    .onClick(async () => {
+                        let val = secretText.getValue();
+                        if (val == "") {
+                            secretText.setValue(uniqueName);
+                            return new Notice("You have to have a secret for comments to work!")
+                        };
+
+                        let profile = this.plugin.commentsHandler.getCommenterProfile(val);
+                        if (profile && profile.id != uniqueName) {
+                            secretText.setValue(uniqueName);
+                            return new Notice("Profile already exists!");
+                        };
+
+                        this.app.saveLocalStorage("CommentPlugin:comment-profile-name", val);
+                        this.plugin.commentsHandler.editCommenterProfile(this.plugin.settings.commenter.id, val);
+                        this.plugin.settings.commenter.id = val;
                         await this.plugin.saveSettings();
                         this.plugin.updateViews(false, true);
-                    })
-            );
+                    }));
 
         new Setting(containerEl)
             .setName("Commenter Name")
@@ -45,8 +59,8 @@ export class CommentsSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                         this.plugin.commentsHandler.editCommenterProfile(this.plugin.settings.commenter.id);
                         this.plugin.updateViews(false, true);
-                    })
-            );
+                    }));
+
         new Setting(containerEl)
             .setName("Commenter Color")
             .setDesc("Color that is shown on your comments")
@@ -58,8 +72,7 @@ export class CommentsSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                         this.plugin.commentsHandler.editCommenterProfile(this.plugin.settings.commenter.id);
                         this.plugin.updateViews(false, true);
-                    })
-            );
+                    }));
 
         containerEl.createEl("h3", { text: "Client settings" })
         new Setting(containerEl)
@@ -73,8 +86,7 @@ export class CommentsSettingTab extends PluginSettingTab {
                         this.plugin.settings.locale = value;
                         await this.plugin.saveSettings();
                         this.plugin.updateViews(false, true);
-                    })
-            );
+                    }));
 
         let focusedText: TextComponent;
         let focusedSlider: SliderComponent;
@@ -87,12 +99,10 @@ export class CommentsSettingTab extends PluginSettingTab {
                 text.inputEl.type = "number";
                 text.inputEl.min = "0";
                 text.inputEl.max = "100";
-                text.setValue("" + Math.round(this.plugin.settings.focusedOpacity * 100));
-                text.onChange((val) => {
-                    focusedSlider.setValue(parseFloat(val) / 100);
-                });
+                text.setValue("" + Math.round(this.plugin.settings.focusedOpacity * 100))
+                    .onChange((val) => focusedSlider.setValue(parseFloat(val) / 100));
             })
-            .addSlider((slider) => {
+            .addSlider((slider) =>
                 focusedSlider = slider.setLimits(0, 1, 0.01)
                     .setValue(this.plugin.settings.focusedOpacity)
                     .onChange((val) => {
@@ -100,9 +110,8 @@ export class CommentsSettingTab extends PluginSettingTab {
                         focusedText.setValue("" + Math.round(val * 100));
                         this.plugin.saveSettings();
                         this.plugin.updateViews(false, true);
-                    });
-            });
-        
+                    }));
+
         let unfocusedText: TextComponent;
         let unfocusedSlider: SliderComponent;
         new Setting(containerEl)
@@ -115,11 +124,9 @@ export class CommentsSettingTab extends PluginSettingTab {
                 text.inputEl.min = "0";
                 text.inputEl.max = "100";
                 text.setValue("" + Math.round(this.plugin.settings.unfocusedOpacity * 100))
-                    .onChange((val) => {
-                        unfocusedSlider.setValue(parseFloat(val) / 100);
-                    });
+                    .onChange((val) => unfocusedSlider.setValue(parseFloat(val) / 100));
             })
-            .addSlider((slider) => {
+            .addSlider((slider) =>
                 unfocusedSlider = slider.setLimits(0, 1, 0.01)
                     .setValue(this.plugin.settings.unfocusedOpacity)
                     .onChange((val) => {
@@ -127,8 +134,6 @@ export class CommentsSettingTab extends PluginSettingTab {
                         unfocusedText.setValue("" + Math.round(val * 100));
                         this.plugin.saveSettings();
                         this.plugin.updateViews(false, true);
-                    })
-            })
-
+                    }));
     }
 }

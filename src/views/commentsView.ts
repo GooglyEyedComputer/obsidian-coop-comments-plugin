@@ -62,7 +62,7 @@ export class CommentsView extends ItemView {
       let replyContainer = newComment.getElementsByClassName("comment-reply-container")[0];
 
       comment.replies.forEach(reply => {
-        let newReply = this.renderReply(reply, commenter);
+        let newReply = this.renderReply(reply, this.plugin.commentsHandler.getCommenterProfile(reply.commenterProfile));
         replyContainer?.append(newReply);
       });
 
@@ -99,9 +99,16 @@ export class CommentsView extends ItemView {
         let reply = this.plugin.commentsHandler.addCommentReply(filePath, comment.id, replyText);
         if (!reply) return;
 
-        let newReply = this.renderReply(reply, commenter);
+        let newReply = this.renderReply(reply, this.plugin.commentsHandler.getCommenterProfile(reply.commenterProfile));
         replyContainer?.append(newReply);
         replyInputElement.value = "";
+      })
+      let replyInput = $(newComment).find("input.reply-text");
+      replyInput.on("keyup", (evt) => {
+        if (evt.which != 13 || !replyInput) return;
+        
+        let replyButtonElement = (replyInput.siblings()[0] as HTMLButtonElement);
+        replyButtonElement.click();
       })
 
       this.commentContainer.appendChild(newComment);
@@ -212,7 +219,7 @@ export class CommentsView extends ItemView {
 
     newReply.innerHTML =
       '<div class="comment-reply-credentials">' +
-      '<div class="reply-credentials-name"><p>' + commenter.name + '  </p></div>' +
+      '<div><p class="reply-credentials-name">' + commenter.name + '</p><div class="reply-credentials-color" style="background-color:' + commenter.color + ';"></div></div>' +
       '<p>' + replyDate.toLocaleTimeString(this.plugin.settings.locale, { timeStyle: 'short' }) + ' ' + replyDate.toLocaleDateString(this.plugin.settings.locale, { dateStyle: "short" }) + '</p>' +
       '</div>' +
       '<div class="comment-reply-text"><p>' + reply.reply + '</p></div>';
