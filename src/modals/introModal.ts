@@ -1,6 +1,5 @@
-import { AbstractInputSuggest, App, ButtonComponent, ColorComponent, Modal, Notice, PopoverSuggest, Setting, TextAreaComponent, TextComponent } from "obsidian";
+import { App, ButtonComponent, ColorComponent, Modal, Notice, Setting, TextComponent } from "obsidian";
 import CommentsHandler from "src/commentsHandler";
-import { CommentsPluginSettings, DEFAULT_SETTINGS } from "src/main";
 import { CommentProfile } from "src/types";
 
 /**

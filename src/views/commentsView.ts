@@ -1,9 +1,8 @@
-import { Editor, EditorRange, ItemView, Menu, TFile, WorkspaceLeaf, addIcon, setIcon } from "obsidian";
+import { Editor, ItemView, Menu, WorkspaceLeaf, setIcon } from "obsidian";
 import $ from "jquery";
 import { TSMap } from "typescript-map";
 
 import { Comment, CommentProfile, CommentReply } from "../types"
-import CommentsHandler from "src/commentsHandler";
 import CommentPlugin from "src/main";
 import { CommentModal } from "src/modals/commentModal";
 import { ConfirmationModal } from "src/modals/confirmationModal";

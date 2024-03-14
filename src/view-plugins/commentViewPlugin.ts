@@ -1,21 +1,10 @@
 import { syntaxTree, } from "@codemirror/language";
-import { search, } from "@codemirror/search";
-import { RangeSetBuilder, Text, EditorSelection, EditorState, RangeValue, RangeSet } from "@codemirror/state";
-import {
-    Decoration,
-    DecorationSet,
-    EditorView,
-    PluginSpec,
-    PluginValue,
-    ViewPlugin,
-    ViewUpdate,
-    WidgetType, Command, getPanel
-} from "@codemirror/view";
+import { RangeSetBuilder } from "@codemirror/state";
+import { Decoration, DecorationSet, EditorView, PluginSpec, PluginValue, ViewPlugin, ViewUpdate } from "@codemirror/view";
+import { Notice } from "obsidian";
 import $ from "jquery";
-import { IterMode } from "@lezer/common"
-import CommentPlugin from "src/main";
+
 import { Comment, CommentProfile } from "../types"
-import { Editor, EditorPosition, EditorRange, Notice } from "obsidian";
 import { TSMap } from "typescript-map";
 import { CommentsView } from "src/views/commentsView";
 import CommentsHandler from "src/commentsHandler";

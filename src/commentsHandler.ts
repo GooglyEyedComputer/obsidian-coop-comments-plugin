@@ -1,5 +1,4 @@
 import { TSMap } from "typescript-map";
-import * as fs from 'fs';
 
 import { Comment, CommentProfile, CommentReply } from "./types"
 import CommentPlugin from "src/main";
@@ -28,8 +27,8 @@ TSMap.prototype.fromJSON = function (jsonObject, convertObjs) {
 /**
  * Handles saving and loading comments and commenters, as well as passing them to other objects.
  */
-export default class CommentsHandler { 
-    commentsPath: string;
+export default class CommentsHandler {
+    commentsPath: string = "_comments.json";
     plugin: CommentPlugin;
 
     commentsMap: TSMap<string, TSMap<string, Comment>>;
@@ -40,15 +39,7 @@ export default class CommentsHandler {
      * @param basePath The path to the Obsidian vault
      * @param plugin An instance of CommentPlugin.
      */
-    constructor(basePath: string, plugin: CommentPlugin,) {
-        this.commentsPath = basePath + "/_comments.json";
-        if (!fs.existsSync(this.commentsPath) || fs.readFileSync(this.commentsPath, "utf-8") == "") fs.writeFileSync(this.commentsPath, '{"commenters":{},"comments":{}}');
-
-        this.commentsMap = new TSMap<string, TSMap<string, Comment>>();
-        this.commentersMap = new TSMap<string, CommentProfile>();
-        let json = JSON.parse(fs.readFileSync(this.commentsPath, "utf-8")); 
-        this.commentsMap.fromJSON(json.comments, true);
-        this.commentersMap.fromJSON(json.commenters, true);
+    constructor(plugin: CommentPlugin,) {
         this.plugin = plugin;
     }
 
@@ -64,7 +55,7 @@ export default class CommentsHandler {
         let comments: TSMap<string, Comment> | undefined = this.getComments(filePath);
         if (!comments) comments = this.commentsMap.set(filePath, new TSMap<string, Comment>()).get(filePath);
 
-        let commenter = this.commentersMap.get(this.plugin.app.loadLocalStorage("comment-profile-name"));
+        let commenter = this.commentersMap.get(this.plugin.app.loadLocalStorage("CommentPlugin:comment-profile-name"));
         if (!commenter) commenter = this.commentersMap.set(this.plugin.settings.commenter.id, { id: this.plugin.settings.commenter.id, name: this.plugin.settings.commenter.name, color: this.plugin.settings.commenter.color }).get(this.plugin.settings.commenter.id);
 
         let lastKey = comments.keys().last();
@@ -143,8 +134,8 @@ export default class CommentsHandler {
      * Add a commenter to memory and save everything to the json file
      * @param commenter The commenter to be added.
      */
-    addCommenterProfile(commenter: CommentProfile){
-        if(commenter){
+    addCommenterProfile(commenter: CommentProfile) {
+        if (commenter) {
             this.commentersMap.set(commenter.id, commenter);
             this.writeJSON();
         }
@@ -154,22 +145,22 @@ export default class CommentsHandler {
      * @param id The id of the comment profile to be edited.
      * @param newId The new id for the comment profile, if any.
      */
-    editCommenterProfile(id:string, newId?:string){
+    editCommenterProfile(id: string, newId?: string) {
         let commenter = this.commentersMap.get(id);
 
-        if(newId){ //If there is a new id, go through every comment and replace old profile id with new one.
+        if (newId) { //If there is a new id, go through every comment and replace old profile id with new one.
             commenter.id = newId;
             this.commentersMap.set(newId, commenter);
             this.commentersMap.delete(id);
-            this.commentsMap.forEach((val)=>{
-                val.forEach((comment)=> {
-                    if(comment.commenterProfile == id) comment.commenterProfile = newId;
-                    comment.replies.forEach((reply)=>reply.commenterProfile = reply.commenterProfile == id ? newId : reply.commenterProfile);
+            this.commentsMap.forEach((val) => {
+                val.forEach((comment) => {
+                    if (comment.commenterProfile == id) comment.commenterProfile = newId;
+                    comment.replies.forEach((reply) => reply.commenterProfile = reply.commenterProfile == id ? newId : reply.commenterProfile);
                 })
             })
-        } 
-        commenter.color = this.plugin.settings.commenter.color; 
-        commenter.name = this.plugin.settings.commenter.name; 
+        }
+        commenter.color = this.plugin.settings.commenter.color;
+        commenter.name = this.plugin.settings.commenter.name;
 
         this.writeJSON();
     }
@@ -193,15 +184,28 @@ export default class CommentsHandler {
         return comments.get(sid);
     }
 
-    getCommenterProfile(id:string): CommentProfile{
-        return this.commentersMap.get(id); 
+    getCommenterProfile(id: string): CommentProfile {
+        return this.commentersMap.get(id);
     }
-    getCommenterProfiles(): CommentProfile[]{
-        return this.commentersMap.values(); 
+    getCommenterProfiles(): CommentProfile[] {
+        return this.commentersMap.values();
     }
 
     writeJSON() {
-        let newJson = {"comments":this.commentsMap.toJSON(), "commenters":this.commentersMap.toJSON()}
-        fs.writeFileSync(this.commentsPath, JSON.stringify(newJson, null, 1));
+        let newJson = { "comments": this.commentsMap.toJSON(), "commenters": this.commentersMap.toJSON() }
+        this.plugin.app.vault.adapter.write(this.commentsPath, JSON.stringify(newJson, null, 1));
+    }
+
+    async readJSON(){
+        if (!this.plugin.app.vault.adapter.exists(this.commentsPath) || await this.plugin.app.vault.adapter.read(this.commentsPath) == "") {
+            await this.plugin.app.vault.adapter.write(this.commentsPath, '{"commenters":{},"comments":{}}').then(this.readJSON)
+            this.readJSON();
+        }
+        let content = await this.plugin.app.vault.adapter.read(this.commentsPath);
+        this.commentsMap = new TSMap<string, TSMap<string, Comment>>();
+        this.commentersMap = new TSMap<string, CommentProfile>();
+        let json = JSON.parse(content);
+        this.commentsMap.fromJSON(json.comments, true);
+        this.commentersMap.fromJSON(json.commenters, true);
     }
 }

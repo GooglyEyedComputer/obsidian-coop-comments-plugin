@@ -1,4 +1,4 @@
-import { App, ButtonComponent, Modal, Setting, TextAreaComponent } from "obsidian";
+import { App, ButtonComponent, Modal, TextAreaComponent } from "obsidian";
 
 /**
  * Modal for writing a comment.

@@ -1,4 +1,4 @@
-import { App, ButtonComponent, Modal, Setting, TextAreaComponent } from "obsidian";
+import { App, ButtonComponent, Modal } from "obsidian";
 
 /**
  * Yes or no modal.

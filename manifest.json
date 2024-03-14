@@ -1,9 +1,9 @@
 {
-	"id": "obsidian-coop-comments-plugin",
+	"id": "coop-comments",
 	"name": "Co-op Comments",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Comments with persistent profiles.",
+	"description": "Adds comments with persistent profiles.",
 	"author": "Oliver Vejen",
 	"authorUrl": "https://googlyeyed.computer/about",
 	"fundingUrl": "Working on it",

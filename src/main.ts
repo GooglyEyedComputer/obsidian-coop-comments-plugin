@@ -1,7 +1,7 @@
 import { Plugin, Notice, Command, Editor, MarkdownView, TAbstractFile, TFolder, TFile, EditorPosition, RGB, WorkspaceLeaf, FileView, Vault } from 'obsidian';
 import { EditorView } from "@codemirror/view";
 import $ from "jquery";
-import {type EditorState, type Extension, Prec} from '@codemirror/state';
+import { Prec } from '@codemirror/state';
 
 import { CommentModal } from "./modals/commentModal"
 import { CommentsView, COMMENTS_VIEW_TYPE } from "./views/commentsView";
@@ -52,13 +52,14 @@ export default class CommentPlugin extends Plugin {
 	});
 
 	commentsView: CommentsView;
-	commentsHandler: CommentsHandler = new CommentsHandler((this.app.vault.adapter as any).basePath, this);
+	commentsHandler: CommentsHandler;
 	settings: CommentsPluginSettings;
 	viewPlugin: CommentViewPlugin;
 
 	async onload() {
 		await this.loadSettings();
-
+		this.commentsHandler = new CommentsHandler(this);
+		await this.commentsHandler.readJSON();
 		this.addSettingTab(new CommentsSettingTab(this.app, this));
 
 		this.registerEditorExtension([Prec.lowest(commentViewPlugin)]);
@@ -94,7 +95,7 @@ export default class CommentPlugin extends Plugin {
 		
 		//Register ribbon button to activate view.
 		this.addRibbonIcon("message-square", "Activate view", () => {
-			this.activateView();
+			this.toggleView();
 		});
 
 		//Update comment view and comment plugin view on "resize" (apparently the most reliable event to do this rn).
@@ -137,7 +138,7 @@ export default class CommentPlugin extends Plugin {
 	/**
 	 * Activates or detaches comments view
 	 */
-	async activateView() {
+	async toggleView() {
 		let { workspace } = this.app;
 
 		let leaf: WorkspaceLeaf | null = null;
