@@ -28,7 +28,7 @@ Another reference has been [obsidian-comments-plugin](https://github.com/Darakah
 
 ### Here are the comments in action!
 
-https://github.com/olivervejen/ObsidianCommentsPlugin/assets/9892968/e3c31da9-5361-4101-a33a-11fa138a752b
+https://github.com/olivervejen/obsidian-coop-comments-plugin/assets/9892968/e3c31da9-5361-4101-a33a-11fa138a752b
 
 
 ### Make a new profile, or retrieve an existing one!
