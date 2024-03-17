@@ -184,11 +184,15 @@ If your plugin does not need CSS, delete this file.
     transition: all 0.15s;
 }
 /* Comment Editor */
-.comment-highlight{
-    border-radius: 3px;
+/* TODO: Find a way to make border radius work without being ruined by Obsidian decorations. */
+.comment-highlight{ 
+    border-radius: 0px;
     -webkit-box-decoration-break: clone;
     -o-box-decoration-break: clone;
     box-decoration-break: clone;
+}
+.comment-highlight:has(*){ 
+    background-color: initial!important;
 }
 .marking-hidden{
     display: inline-block;

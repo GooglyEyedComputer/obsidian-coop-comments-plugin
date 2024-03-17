@@ -1,0 +1,28 @@
+{
+    "comments": {
+        "Welcome.md": {
+            "1": {
+                "id": 1,
+                "commenterProfile": "Secret!",
+                "commentedText": "Damn!",
+                "comment": "OKAY",
+                "dateTime": "Tue Aug 19 1975 23:15:30 GMT+0100 (Central European Standard Time)",
+                "replies": [
+                    {
+                        "commenterProfile": "Secret!",
+                        "reply": "string",
+                        "dateTime": "Tue Aug 19 1975 23:15:30 GMT+0100 (Central European Standard Time)"
+                    }
+                ],
+                "resolved": false
+            }
+        }
+    },
+    "commenters": {
+        "Secret!": {
+            "id": "Secret!",
+            "name": "Very real user!",
+            "color": "#F3FFA2"
+        }
+    }
+}

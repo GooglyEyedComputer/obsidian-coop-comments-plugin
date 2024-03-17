@@ -1,4 +1,5 @@
 import { App, ButtonComponent, ColorComponent, Modal, Notice, Setting, TextComponent } from "obsidian";
+
 import CommentsHandler from "src/commentsHandler";
 import { CommentProfile } from "src/types";
 
@@ -39,15 +40,15 @@ export class IntroModal extends Modal {
           .onChange(async (value) => {
             let matching = ids?.includes(text.getValue());
             if (!matching) {
-              this.colorInput.setValue("#000000");
-              this.nameInput.setValue("");
+              this.colorInput?.setValue("#000000");
+              this.nameInput?.setValue("");
               return;
             };
             let commenter = commentHandler?.getCommenterProfile(value);
             if (!commenter) return;
-            this.colorInput.setValue(commenter?.color);
-            this.nameInput.setValue(commenter?.name);
-            this.nameInput.onChanged();
+            this.colorInput?.setValue(commenter?.color);
+            this.nameInput?.setValue(commenter?.name);
+            this.nameInput?.onChanged();
           });
           this.idInput.onChanged()
       });
@@ -56,7 +57,7 @@ export class IntroModal extends Modal {
       .setName("Commenter Name")
       .setDesc("The name that is shown on your comments")
       .addText((text) => {
-        this.nameInput = text
+        this.nameInput = text 
           .setPlaceholder("Stacy Fakename")
           .onChange(async (value) => {
             this.name = value;
@@ -75,7 +76,7 @@ export class IntroModal extends Modal {
 
 
     let submitButtonElement: ButtonComponent = new ButtonComponent(contentEl).setCta().setButtonText("Submit").onClick((val) => {
-      this.id = this.idInput.getValue();
+      this.id = this.idInput.getValue(); 
       if (this.id == "") return new Notice("You have to have a secret for comments to work!");
       this.color = this.colorInput.getValue();
       this.name = this.nameInput.getValue();

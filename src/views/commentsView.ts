@@ -1,6 +1,5 @@
 import { Editor, ItemView, Menu, WorkspaceLeaf, setIcon } from "obsidian";
 import $ from "jquery";
-import { TSMap } from "typescript-map";
 
 import { Comment, CommentProfile, CommentReply } from "../types"
 import CommentPlugin from "src/main";
@@ -49,11 +48,11 @@ export class CommentsView extends ItemView {
 
     this.commentContainer = container.createDiv({ cls: "comments-container" });
 
-    let comments: TSMap<string, Comment> | undefined = this.plugin.commentsHandler.getComments(filePath);
+    let comments: Map<string, Comment> | undefined = this.plugin.commentsHandler.getComments(filePath);
     if (!comments) return;
 
-    if (editor && !this.currentEditor) this.currentEditor = editor;
-    if (comments.values().length == 0 || !this.currentEditor || !viewPlugin) return;
+    if (editor && !this.currentEditor) this.currentEditor = editor; 
+    if (comments.size == 0 || !this.currentEditor || !viewPlugin) return;
 
     comments.forEach(comment => {
       let commenter = this.plugin.commentsHandler.getCommenterProfile(comment.commenterProfile);

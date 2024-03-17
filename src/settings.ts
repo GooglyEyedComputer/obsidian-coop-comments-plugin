@@ -1,5 +1,5 @@
 import CommentPlugin from "./main";
-import { App, ColorComponent, Notice, PluginSettingTab, Setting, SliderComponent, TextComponent } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting, SliderComponent, TextComponent } from "obsidian";
 import $ from "jquery";
 
 export class CommentsSettingTab extends PluginSettingTab {
@@ -34,7 +34,7 @@ export class CommentsSettingTab extends PluginSettingTab {
                             return new Notice("You have to have a secret for comments to work!")
                         };
 
-                        let profile = this.plugin.commentsHandler.getCommenterProfile(val);
+                        let profile = this.plugin.commentsHandler.hasCommenterProfile(val) ? this.plugin.commentsHandler.getCommenterProfile(val) : undefined;
                         if (profile && profile.id != uniqueName) {
                             secretText.setValue(uniqueName);
                             return new Notice("Profile already exists!");

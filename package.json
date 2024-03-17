@@ -25,7 +25,6 @@
 	},
 	"dependencies": {
 		"codemirror": "^6.0.1",
-		"jquery": "^3.7.1",
-		"typescript-map": "^0.1.0"
+		"jquery": "^3.7.1"
 	}
 }

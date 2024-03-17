@@ -1,15 +1,14 @@
-import { Plugin, Notice, Command, Editor, MarkdownView, TAbstractFile, TFolder, TFile, EditorPosition, RGB, WorkspaceLeaf, FileView, Vault } from 'obsidian';
+import { Plugin, Notice, Command, Editor, MarkdownView, WorkspaceLeaf } from 'obsidian';
 import { EditorView } from "@codemirror/view";
 import $ from "jquery";
 import { Prec } from '@codemirror/state';
 
 import { CommentModal } from "./modals/commentModal"
 import { CommentsView, COMMENTS_VIEW_TYPE } from "./views/commentsView";
-// var _comments = require("../../../../_comments.json");
 import CommentsHandler from './commentsHandler';
 import { CommentsSettingTab } from "./settings";
 import { CommentViewPlugin, commentViewPlugin } from './view-plugins/commentViewPlugin';
-import { CommentProfile } from './types';
+import { CommentProfile, Comment } from './types';
 import { IntroModal } from './modals/introModal';
 
 
@@ -60,6 +59,7 @@ export default class CommentPlugin extends Plugin {
 		await this.loadSettings();
 		this.commentsHandler = new CommentsHandler(this);
 		await this.commentsHandler.readJSON();
+
 		this.addSettingTab(new CommentsSettingTab(this.app, this));
 
 		this.registerEditorExtension([Prec.lowest(commentViewPlugin)]);
@@ -117,7 +117,7 @@ export default class CommentPlugin extends Plugin {
 		if (!path || !editor)
 			return;
 		// @ts-expect-error, not typed
-		const editorView = editor.cm as EditorView;
+		const editorView = editor.cm as EditorView; 
 
 		const plugin = editorView.plugin(commentViewPlugin);
 		if (plugin) {
@@ -125,13 +125,12 @@ export default class CommentPlugin extends Plugin {
 			let comments = this.commentsHandler.getComments(path);
 
 			plugin.setCommentsHandler(this.commentsHandler)
-			if (comments)
-				plugin.setComments(comments);
+			plugin.setComments(comments);
 			if (this.commentsView) {
 				this.commentsView.updateView(path, plugin, editor);
 				plugin.setCommentsView(this.commentsView);
 			}
-			plugin.triggerUpdate(force);
+			plugin.triggerUpdate(force)
 		}
 	}
 

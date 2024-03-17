@@ -5,7 +5,6 @@ import { Notice } from "obsidian";
 import $ from "jquery";
 
 import { Comment, CommentProfile } from "../types"
-import { TSMap } from "typescript-map";
 import { CommentsView } from "src/views/commentsView";
 import CommentsHandler from "src/commentsHandler";
 
@@ -14,11 +13,11 @@ import CommentsHandler from "src/commentsHandler";
  */
 export class CommentViewPlugin implements PluginValue {
     decorations: DecorationSet;
-    comments: TSMap<string, Comment>;
+    comments: Map<string, Comment>;
     view: EditorView;
     commentsView: CommentsView;
     commentsHandler: CommentsHandler;
-    commentMarkings: TSMap<string, Decoration> = new TSMap<string, Decoration>();
+    commentMarkings: Map<string, Decoration> = new Map<string, Decoration>();
 
     focusedOpacity: string = "1";
     unfocusedOpacity: string = "1";
@@ -63,8 +62,8 @@ export class CommentViewPlugin implements PluginValue {
         if (update.selectionSet || this.newCommenter) {
             this.commentMarkings.forEach((val, key) => {
                 let markSpan = $("span.comment-highlight[data-comment-id='" + key + "']");
-                if (key) this.changeMarkingOpacity(this.unfocusedOpacity, markSpan, key, val);
-
+                this.changeMarkingOpacity(this.unfocusedOpacity, markSpan, key, val);
+                
                 markSpan.parent().find("span:not(.comment-highlight)[data-comment-id='" + key + "']").addClass("marking-hidden");
             })
 
@@ -73,7 +72,7 @@ export class CommentViewPlugin implements PluginValue {
             let parent = selected.node.parentElement;
             if (!parent) return;
 
-            let $parent = $(parent);
+            let $parent = $(parent); 
             let id = $parent.data("comment-id") as string;
             $parent = $("span.comment-highlight[data-comment-id='" + id + "']")
 
@@ -95,6 +94,8 @@ export class CommentViewPlugin implements PluginValue {
      */
     changeMarkingOpacity(opacity: string, el: JQuery<HTMLElement>, id: string, decoration?: Decoration) {
         let deco = decoration ? decoration : this.commentMarkings.get("" + id);
+        if (!deco) return;
+
         let str = deco.spec.attributes.style as string;
 
         let arr = str.split(",")
@@ -107,8 +108,8 @@ export class CommentViewPlugin implements PluginValue {
         el.attr("style", str);
     }
 
-    setComments(comments: TSMap<string, Comment>) {
-        this.comments = comments;
+    setComments(comments: Map<string, Comment> | undefined) {
+        this.comments = comments ? comments : new Map<string, Comment>();
     }
     setCommentsView(commentsView: CommentsView) {
         this.commentsView = commentsView;
@@ -125,7 +126,7 @@ export class CommentViewPlugin implements PluginValue {
      * @param force If the current decorations should be flushed, so that new decorations are generated from scratch.
      */
     triggerUpdate(force?: true) {
-        if (force) this.commentMarkings = new TSMap<string, Decoration>();
+        if (force) this.commentMarkings = new Map<string, Decoration>();
         this.shouldUpdate = true;
         this.view.dispatch();
     }
@@ -205,16 +206,15 @@ export class CommentViewPlugin implements PluginValue {
                             let comment = this.comments.get(id);
                             let commenter: CommentProfile;
                             let marking = this.commentMarkings.get(id);
+                            let color = hexToRgb("#FF0000");        
 
-                            let color = hexToRgb("#FF0000");
                             
-
                             if (comment) {
                                 commenter = this.commentsHandler.getCommenterProfile(comment.commenterProfile);
                                 color = hexToRgb(commenter.color);
 
                                 //Create new Decoration if there are none already.
-                                if (!marking && comment) { 
+                                if (!marking) {
                                     marking = Decoration.mark({
                                         tagName: "span", attributes: {
                                             "style":
@@ -223,7 +223,7 @@ export class CommentViewPlugin implements PluginValue {
                                             "data-comment-id": "" + comment.id,
                                             "class": "comment-highlight"
                                         }
-                                    });
+                                    }); 
                                     this.commentMarkings.set(id, marking);
                                 }
 
@@ -262,10 +262,10 @@ export class CommentViewPlugin implements PluginValue {
                                         "style":
                                             "--bgc:" + color.r + "," + color.g + "," + color.b + ";" +
                                             "background-color:rgba(var(--bgc), " + this.unfocusedOpacity + ");",
-                                        "class": "comment-highlight-error",
+                                        "class": "comment-highlight comment-highlight-error",
                                     }
                                 });
-                                this.commentMarkings.set(id, marking);
+                                // this.commentMarkings.set(id, marking);
                                 builder.add(
                                     m.index,
                                     m.index + match.length,
