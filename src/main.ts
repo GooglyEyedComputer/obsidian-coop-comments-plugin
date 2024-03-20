@@ -65,7 +65,7 @@ export default class CommentPlugin extends Plugin {
 		this.registerEditorExtension([Prec.lowest(commentViewPlugin)]);
 		
 		let profileId = this.app.loadLocalStorage("CommentPlugin:comment-profile-name");
-		if (!profileId || !this.commentsHandler.getCommenterProfile(profileId)) {
+		if (!profileId || !this.commentsHandler.getCommenterProfileIfExists(profileId)) {
 			//Intro popup if user is new.
 			new IntroModal(this.app, (val) => {
 				this.app.saveLocalStorage("CommentPlugin:comment-profile-name", val.id);

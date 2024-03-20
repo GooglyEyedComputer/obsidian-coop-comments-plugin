@@ -170,6 +170,10 @@ export default class CommentsHandler {
 		if(!commenter) throw new Error("There are no profiles with the id: " + id)
         return commenter;
     } 
+    getCommenterProfileIfExists(id: string): CommentProfile | undefined {
+        let commenter = this.commentersMap.get(id);
+        return commenter;
+    } 
     hasCommenterProfile(id: string): boolean {
         return this.commentersMap.has(id);
     }
@@ -183,9 +187,9 @@ export default class CommentsHandler {
     }
 
     async readJSON() {
-        if (!this.plugin.app.vault.adapter.exists(this.commentsPath) || await this.plugin.app.vault.adapter.read(this.commentsPath) == "") {
-            await this.plugin.app.vault.adapter.write(this.commentsPath, '{"commenters":{},"comments":{}}').then(this.readJSON) 
-            this.readJSON();
+        if (!await this.plugin.app.vault.adapter.exists(this.commentsPath) || await this.plugin.app.vault.adapter.read(this.commentsPath) == "") {
+            await this.plugin.app.vault.adapter.write(this.commentsPath, '{"commenters":{},"comments":{}}')
+            await this.readJSON();
         }
         let content = await this.plugin.app.vault.adapter.read(this.commentsPath); 
  
