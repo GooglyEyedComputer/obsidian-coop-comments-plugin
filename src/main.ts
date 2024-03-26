@@ -41,6 +41,7 @@ export default class CommentPlugin extends Plugin {
 				let filePath = view.file.path;
 				new CommentModal(this.app, (commentText) => {
 					this.commentsHandler.addComment(filePath, editor.getSelection(), commentText, (comment) => editor.replaceSelection("|" + (comment.id) + "|" + editor.getSelection() + "||"));
+					this.toggleView(true);
 					this.updateViews(true);
 				}).open();
 			} else {
@@ -75,7 +76,6 @@ export default class CommentPlugin extends Plugin {
 				this.updateViews(true, true);
 			}).open(this.commentsHandler, profileId);
 		}
-
 		//Register right click event for commenting.
 		this.registerEvent(
 			this.app.workspace.on("editor-menu", (menu) => {
@@ -83,7 +83,6 @@ export default class CommentPlugin extends Plugin {
 					item.setTitle(this.commentCommand.name.split(": ")[1])
 						.setIcon(this.commentCommand.icon ? this.commentCommand.icon : null)
 						.onClick(() => {
-							//@ts-ignore
 							this.app.commands.executeCommandById(this.commentCommand.id);
 						});
 				});
@@ -116,7 +115,6 @@ export default class CommentPlugin extends Plugin {
 		let editor = this.app.workspace.activeEditor?.editor;
 		if (!path || !editor)
 			return;
-		// @ts-expect-error, not typed
 		const editorView = editor.cm as EditorView; 
 
 		const plugin = editorView.plugin(commentViewPlugin);
@@ -137,13 +135,14 @@ export default class CommentPlugin extends Plugin {
 	/**
 	 * Activates or detaches comments view
 	 */
-	async toggleView() {
+	async toggleView(open?: boolean) {
 		let { workspace } = this.app;
 
 		let leaf: WorkspaceLeaf | null = null;
 		let leaves = workspace.getLeavesOfType(COMMENTS_VIEW_TYPE);
 
 		if (leaves.length > 0) {
+			if(open) return;
 			leaf = leaves[0];
 			leaf.detach();
 		} else {

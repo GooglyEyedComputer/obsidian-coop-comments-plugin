@@ -33,13 +33,13 @@ export class CommentViewPlugin implements PluginValue {
 
     update(update: ViewUpdate) {
         //If the decorations are generate, add click event triggers.
-        if (this.decorateDone) {
+        if (this.decorateDone && this.commentMarkings.size && this.commentsView) {
             let span = $("span.comment-highlight");
             span.each((i, e) => {
                 let id = e.getAttr("data-comment-id");
                 if (!id) return;
                 let el = $(e);
-
+                
                 el.off("click").on("click", (ev) => {
                     let element = $(this.commentsView.containerEl).find(".comment-element[data-id='" + id + "']");
                     element.trigger("click", { scroll: ev.ctrlKey, dontSelect: true });
@@ -82,7 +82,6 @@ export class CommentViewPlugin implements PluginValue {
 
             this.changeMarkingOpacity(this.focusedOpacity, $parent, id);
             $("span:not(.comment-highlight)[data-comment-id='" + id + "']").removeClass("marking-hidden");
-
         }
     }
     /**
@@ -278,9 +277,6 @@ export class CommentViewPlugin implements PluginValue {
             });
         }
         return builder.finish();
-    }
-    check(from: number, to: number, value: Decoration): false | void {
-        return false;
     }
 }
 
