@@ -16,6 +16,7 @@ Another reference has been [obsidian-comments-plugin](https://github.com/Darakah
   - Comments saved in a json file in the root of the vault. (for now)
   - CTRL+Click to center the commented text.
 - Comment view
+  - Click comment ribbon icon to open. 
   - List of all comments on in the current file.
   - Reply to comments.
   - Edit and remove comments.
